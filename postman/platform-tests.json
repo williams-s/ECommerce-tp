@@ -1,0 +1,315 @@
+{
+  "info": {
+    "name": "E-commerce API Full Collection",
+    "_postman_id": "abcdef12-3456-7890-abcd-ef1234567890",
+    "description": "Collection Postman pour tous les endpoints Users (8081), Products (8082), Orders (8083)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "userId", "value": "1" },
+    { "key": "productId", "value": "1" },
+    { "key": "orderId", "value": "1" },
+    { "key": "baseUrlUser", "value": "http://localhost:8081" },
+    { "key": "baseUrlProduct", "value": "http://localhost:8082" },
+    { "key": "baseUrlOrder", "value": "http://localhost:8083" }
+  ],
+  "item": [
+    {
+      "name": "Scenario Complet",
+      "item": [
+        {
+          "name": "Créer user",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrlUser}}/api/v1/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let res = pm.response.json();",
+                  "pm.collectionVariables.set(\"userId\", res.id);",
+                  "console.log(\"User ID saved:\", res.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Créer produit",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrlProduct}}/api/v1/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Laptop\",\n  \"description\": \"Laptop puissant pour développeurs\",\n  \"price\": 1200.00,\n  \"category\": \"ELECTRONICS\",\n  \"stock\": 10,\n  \"imageUrl\": \"http://example.com/laptop.png\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let res = pm.response.json();",
+                  "pm.collectionVariables.set(\"productId\", res.id);",
+                  "console.log(\"Product ID saved:\", res.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Créer commande",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrlOrder}}/api/v1/orders",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"status\": \"PENDING\",\n  \"shippingAddress\": \"123 Rue Exemple\",\n  \"orderItems\": [\n    { \"productId\": {{productId}}, \"quantity\": 1 }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let res = pm.response.json();",
+                  "pm.collectionVariables.set(\"orderId\", res.id);",
+                  "console.log(\"Order ID saved:\", res.id);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Users (8081)",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8081/api/v1/users"
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8081/api/v1/users/{{userId}}"
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Alice\",\n  \"lastName\": \"Wonder\",\n  \"email\": \"alice@example.com\"\n}"
+            },
+            "url": "http://localhost:8081/api/v1/users"
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"AliceUpdated\",\n  \"lastName\": \"WonderUpdated\",\n  \"email\": \"aliceupdated@example.com\"\n}"
+            },
+            "url": "http://localhost:8081/api/v1/users/{{userId}}"
+          }
+        },
+        {
+          "name": "Deactivate User",
+          "request": {
+            "method": "PATCH",
+            "url": "http://localhost:8081/api/v1/users/{{userId}}/deactivate"
+          }
+        },
+        {
+          "name": "Search Users by LastName",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8081/api/v1/users/search?lastName=Wonder"
+          }
+        },
+        {
+          "name": "Get Active Users",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8081/api/v1/users/active"
+          }
+        },        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:8081/api/v1/users/{{userId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products (8082)",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": { "method": "GET", "url": "http://localhost:8082/api/v1/products" }
+        },
+        {
+          "name": "Get Product By ID",
+          "request": { "method": "GET", "url": "http://localhost:8082/api/v1/products/{{productId}}" }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Laptop\",\n  \"description\": \"Gaming Laptop\",\n  \"price\": 1200.50,\n  \"category\": \"ELECTRONICS\",\n  \"stock\": 10\n}"
+            },
+            "url": "http://localhost:8082/api/v1/products"
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Laptop Updated\",\n  \"description\": \"Updated Laptop\",\n  \"price\": 1300.00,\n  \"category\": \"ELECTRONICS\",\n  \"stock\": 15\n}"
+            },
+            "url": "http://localhost:8082/api/v1/products/{{productId}}"
+          }
+        },
+        {
+          "name": "Search Products by Name",
+          "request": { "method": "GET", "url": "http://localhost:8082/api/v1/products/search?name=Laptop" }
+        },
+        {
+          "name": "Get Products by Category",
+          "request": { "method": "GET", "url": "http://localhost:8082/api/v1/products/category/ELECTRONICS" }
+        },
+        {
+          "name": "Get Available Products",
+          "request": { "method": "GET", "url": "http://localhost:8082/api/v1/products/available" }
+        },
+        {
+          "name": "Update Product Stock",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": { "mode": "raw", "raw": "{ \"quantity\": 20 }" },
+            "url": "http://localhost:8082/api/v1/products/{{productId}}/stock"
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": { "method": "DELETE", "url": "http://localhost:8082/api/v1/products/{{productId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Orders (8083)",
+      "item": [
+        {
+          "name": "Get All Orders",
+          "request": { "method": "GET", "url": "http://localhost:8083/api/v1/orders" }
+        },
+        {
+          "name": "Get Order By ID",
+          "request": { "method": "GET", "url": "http://localhost:8083/api/v1/orders/{{orderId}}" }
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"status\": \"PENDING\",\n  \"shippingAddress\": \"123 Main Street\",\n  \"orderItems\":[{\"productId\": {{productId}}, \"quantity\": 2}]\n}"
+            },
+            "url": "http://localhost:8083/api/v1/orders"
+          }
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PUT",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": { "mode": "raw", "raw": "{ \"status\": \"CONFIRMED\" }" },
+            "url": "http://localhost:8083/api/v1/orders/{{orderId}}/status"
+          }
+        },
+
+        {
+          "name": "Get Orders By User",
+          "request": { "method": "GET", "url": "http://localhost:8083/api/v1/orders/user/{{userId}}" }
+        },
+        {
+          "name": "Get Orders By Status",
+          "request": { "method": "GET", "url": "http://localhost:8083/api/v1/orders/status/PENDING" }
+        },
+        {
+          "name": "Delete Order",
+          "request": { "method": "DELETE", "url": "http://localhost:8083/api/v1/orders/{{orderId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Errors Scripts",
+      "item": [
+        {
+          "name": "Create Order With Invalid User",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 999,\n  \"status\": \"PENDING\",\n  \"shippingAddress\": \"123 Main Street\",\n  \"orderItems\":[{\"productId\": {{productId}}, \"quantity\": 2}]\n}"
+            },
+            "url": "http://localhost:8083/api/v1/orders"
+          }
+        },
+        {
+          "name": "Create Order With Invalid Product",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"status\": \"PENDING\",\n  \"shippingAddress\": \"123 Main Street\",\n  \"orderItems\":[{\"productId\": 999, \"quantity\": 2}]\n}"
+            },
+            "url": "http://localhost:8083/api/v1/orders"
+          }
+        },
+        {
+          "name": "Create Order With Invalid Quantity",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"status\": \"PENDING\",\n  \"shippingAddress\": \"123 Main Street\",\n  \"orderItems\":[{\"productId\": {{productId}}, \"quantity\": 2000}]\n}"
+            },
+            "url": "http://localhost:8083/api/v1/orders"
+          }
+        }
+      ]
+    }
+  ]
+}
