@@ -153,10 +153,10 @@
             "url": "http://localhost:8081/api/v1/users/active"
           }
         },        {
-          "name": "Delete User",
+          "name": "Delete User with id 1",
           "request": {
             "method": "DELETE",
-            "url": "http://localhost:8081/api/v1/users/{{userId}}"
+            "url": "http://localhost:8081/api/v1/users/1"
           }
         }
       ]
@@ -218,8 +218,8 @@
           }
         },
         {
-          "name": "Delete Product",
-          "request": { "method": "DELETE", "url": "http://localhost:8082/api/v1/products/{{productId}}" }
+          "name": "Delete Product with id 1",
+          "request": { "method": "DELETE", "url": "http://localhost:8082/api/v1/products/1" }
         }
       ]
     },
