@@ -42,7 +42,7 @@ public class OrderService {
     }
 
     public OrderResponseDTO getOrderById(Long id) {
-        if (userNotFound(id)) throw new ResourceNotFoundException("User", "id", id);
+        //if (userNotFound(id)) throw new ResourceNotFoundException("User", "id", id);
         log.debug("Récupération de la commande avec l'id: {}", id);
         OrderResponseDTO order = orderRepository.findById(id).map(orderMapper::toDTO).orElseThrow(() -> new ResourceNotFoundException("Order", "id", id));
         log.info("Commande recuperée: {}", order);
@@ -62,7 +62,6 @@ public class OrderService {
 
     @Transactional
     public OrderResponseDTO updateOrderStatus(Long id, String status) {
-        if (userNotFound(id)) throw new ResourceNotFoundException("User", "id", id);
         log.debug("Mise à jour du statut de la commande avec l'id: {}", id);
         Order order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order", "id", id));
         if (order.getStatus().equals(OrderStatus.CANCELLED) || order.getStatus().equals(OrderStatus.DELIVERED)) {
@@ -77,7 +76,6 @@ public class OrderService {
 
     @Transactional
     public void deleteOrder(Long id) {
-        if (userNotFound(id)) throw new ResourceNotFoundException("User", "id", id);
         log.debug("Suppression de la commande avec l'id: {}", id);
         Order order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order", "id", id));
         orderRepository.delete(order);
