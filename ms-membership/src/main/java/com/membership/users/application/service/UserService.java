@@ -197,4 +197,16 @@ public class UserService {
         
         return userMapper.toDto(deactivatedUser);
     }
+
+    /**
+     * Récupère un utilisateur par son email
+     */
+    public UserResponseDTO getUserByEmail(String email) {
+        log.debug("Récupération de l'utilisateur avec l'email: {}", email);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+
+        return userMapper.toDto(user);
+    }
 }

@@ -27,6 +27,12 @@ spring:
       enabled: true
       path: /h2-console
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:public_key.pem
+
 # Configuration du serveur
 server:
   port: ${APP_PORT:8081}
