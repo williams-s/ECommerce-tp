@@ -48,12 +48,24 @@
 
 ## 4. Génération des clés RSA
 
-Les clés sont générées une seule fois et partagées de manière sécurisée.
+### Commandes de génération
+```
+openssl genrsa -out private_key.pem 2048
 
-* **Clé privée** : utilisée uniquement par le service Membership
-* **Clé publique** : utilisée par Product et Order
+openssl rsa -in private_key.pem -pubout -out public_key.pem
+```
 
+### Distribution des clés
 
+* **Clé privée** (`private_key.pem`) :
+  - Stockée uniquement dans le service Membership
+  - Placée dans `src/main/resources/`
+  - Utilisée pour signer les JWT
+
+* **Clé publique** (`public_key.pem`) :
+  - Copiée dans Product et Order
+  - Placée dans `src/main/resources/`
+  - Utilisée pour valider les JWT
 ---
 
 ## 5. Gestion des erreurs
