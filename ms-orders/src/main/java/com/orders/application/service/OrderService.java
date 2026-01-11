@@ -10,6 +10,7 @@ import com.orders.infrastructure.client.UserClient;
 import com.orders.infrastructure.exception.CommandCancelleOrDeliveredException;
 import com.orders.infrastructure.exception.ResourceNotFoundException;
 import com.orders.infrastructure.metrics.OrderMetrics;
+import com.orders.infrastructure.security.UserDetails;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,10 @@ public class OrderService {
 
     @Transactional
     public OrderResponseDTO createOrder(OrderRequestDTO orderRequestDTO) {
+        //userId = UserDetails.getUserId();
+        //orderRequestDTO.setUserId(userId);
         if (userNotFound(orderRequestDTO.getUserId())) throw new ResourceNotFoundException("User", "id", orderRequestDTO.getUserId());
+        //if (userNotFound(userId)) throw new ResourceNotFoundException("User", "id", userId);
         log.debug("Création de la commande pour le user: {}", orderRequestDTO.getUserId());
         Order order = orderMapper.toEntity(orderRequestDTO);
         Order savedOrder = orderRepository.save(order);

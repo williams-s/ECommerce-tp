@@ -18,7 +18,7 @@ import java.util.List;
 @Builder
 public class OrderRequestDTO {
 
-    @NotNull(message = "L'id de l'utilisateur ne peut pas être vide")
+    //@NotNull(message = "L'id de l'utilisateur ne peut pas être vide")
     private Long userId;
 
     @NotNull(message = "Le statut de la commande ne peut pas être vide")

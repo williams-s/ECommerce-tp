@@ -13,18 +13,28 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Map;
+import java.util.Objects;
 
 @Component
-@AllArgsConstructor
 public class ProductClient {
 
-    private final static String BASE_PRODUCT_SERVICE_URL = "http://localhost:8082";
-    private final static String PRODUCT_SERVICE_API = BASE_PRODUCT_SERVICE_URL + "/api/v1/products";
     private final WebClient webClient;
     private final ExternalServiceChecker externalServiceChecker;
+    private final String baseProductServiceUrl;
+    private final String productServiceApi;
 
+    public ProductClient(
+            WebClient webClient,
+            ExternalServiceChecker externalServiceChecker,
+            @Value("${PRODUCT_SERVICE_URL}") String baseProductServiceUrl) {
+        this.webClient = webClient;
+        this.externalServiceChecker = externalServiceChecker;
+        this.baseProductServiceUrl = Objects.requireNonNullElse(baseProductServiceUrl, "http://localhost:8082");
+        this.productServiceApi = baseProductServiceUrl + "/api/v1/products";
+    }
 
     private String getToken() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -34,11 +44,10 @@ public class ProductClient {
         return null;
     }
 
-
     public boolean productNotExist(Long productId) {
         try {
             return !Boolean.TRUE.equals(webClient.get()
-                    .uri(PRODUCT_SERVICE_API + "/{id}", productId)
+                    .uri(productServiceApi + "/{id}", productId)
                     .header("Authorization", "Bearer " + getToken())
                     .retrieve()
                     .toBodilessEntity()
@@ -46,16 +55,15 @@ public class ProductClient {
                     .onErrorReturn(false)
                     .block());
         } catch (WebClientResponseException e) {
-            if (e.getStatusCode() == HttpStatusCode.valueOf(401)) {
+            if (e.getStatusCode().value() == 401) {
                 throw new InvalidJwtException("product-service");
             }
             throw e;
         }
     }
 
-
     public OrderedProductDTO getProduct(Long productId) {
-        if (!externalServiceChecker.checkService(BASE_PRODUCT_SERVICE_URL)) {
+        if (!externalServiceChecker.checkService(baseProductServiceUrl)) {
             throw new ExternalServiceDownException("product-service", "productId", productId.toString());
         }
         if (productNotExist(productId)) {
@@ -63,13 +71,13 @@ public class ProductClient {
         }
         try {
             return webClient.get()
-                    .uri(PRODUCT_SERVICE_API + "/{id}", productId)
+                    .uri(productServiceApi + "/{id}", productId)
                     .header("Authorization", "Bearer " + getToken())
                     .retrieve()
                     .bodyToMono(OrderedProductDTO.class)
                     .block();
         } catch (WebClientResponseException e) {
-            if (e.getStatusCode() == HttpStatusCode.valueOf(401)) {
+            if (e.getStatusCode().value() == 401) {
                 throw new InvalidJwtException("product-service");
             }
             throw e;
@@ -77,7 +85,7 @@ public class ProductClient {
     }
 
     public OrderedProductDTO updateStock(Long productId, Integer quantity) {
-        if (!externalServiceChecker.checkService(BASE_PRODUCT_SERVICE_URL)) {
+        if (!externalServiceChecker.checkService(baseProductServiceUrl)) {
             throw new ExternalServiceDownException("product-service", "productId", productId.toString());
         }
         if (productNotExist(productId)) {
@@ -86,14 +94,14 @@ public class ProductClient {
         Map<String, Integer> body = Map.of("quantity", quantity);
         try {
             return webClient.patch()
-                    .uri(PRODUCT_SERVICE_API + "/{id}/stock", productId)
+                    .uri(productServiceApi + "/{id}/stock", productId)
                     .header("Authorization", "Bearer " + getToken())
                     .bodyValue(body)
                     .retrieve()
                     .bodyToMono(OrderedProductDTO.class)
                     .block();
         } catch (WebClientResponseException e) {
-            if (e.getStatusCode() == HttpStatusCode.valueOf(401)) {
+            if (e.getStatusCode().value() == 401) {
                 throw new InvalidJwtException("product-service");
             }
             throw e;

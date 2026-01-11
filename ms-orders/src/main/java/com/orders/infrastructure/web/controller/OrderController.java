@@ -3,6 +3,7 @@ package com.orders.infrastructure.web.controller;
 import com.orders.application.dto.OrderRequestDTO;
 import com.orders.application.dto.OrderResponseDTO;
 import com.orders.application.service.OrderService;
+import com.orders.infrastructure.security.UserDetails;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -71,6 +72,7 @@ public class OrderController {
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderResponseDTO> createOrder(@Parameter(description = "Commande à créer", required = true) @Valid @RequestBody OrderRequestDTO orderRequestDTO) {
+        orderRequestDTO.setUserId(UserDetails.getUserId());
         log.info("POST /api/v1/orders - Création de la commande pour le user: {}", orderRequestDTO.getUserId());
         return ResponseEntity.ok(orderService.createOrder(orderRequestDTO));
     }

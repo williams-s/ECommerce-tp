@@ -29,7 +29,20 @@ public class AuthService {
                 .expiresAt(Instant.now().plusSeconds(EXPIRATION))
                 .build();
 
-        return
-            new LoginResponseDTO(jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue(), EXPIRATION);
+        return new LoginResponseDTO(jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue(), EXPIRATION);
+    }
+
+    public LoginResponseDTO generateExpiredToken(Long userId, String email, List<String> roles) {
+        Instant now = Instant.now();
+
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .claim("userId", userId)
+                .claim("email", email)
+                .claim("roles", roles)
+                .issuedAt(now.minusSeconds(7200))
+                .expiresAt(now.minusSeconds(3600))
+                .build();
+
+        return new LoginResponseDTO(jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue(), -3600);
     }
 }

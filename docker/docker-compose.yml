@@ -22,6 +22,9 @@ services:
     container_name: ms-order
     ports:
       - "8083:8083"
+    environment:
+      - USER_SERVICE_URL=http://ms-membership:8081
+      - PRODUCT_SERVICE_URL=http://ms-product:8082
     networks:
       - ecommerce-network
 

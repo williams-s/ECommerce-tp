@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,16 +35,38 @@ public class AuthController {
         @ApiResponse(responseCode = "200", description = "Utilisateur authentifié avec succès",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                      schema = @Schema())),
-        @ApiResponse(responseCode = "404", description = "Utilisateur non rencontré",
+        @ApiResponse(responseCode = "404", description = "Utilisateur non trouvé",
                     content = @Content)
     })
-    @RequestMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LoginResponseDTO> login(LoginRequestDTO loginRequestDTO) {
+    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
         String email = loginRequestDTO.getEmail();
+        //log.info("Email de l'utilisateur: {}", email);
         List<String> roles = List.of("USER");
         Long userId = userService.getUserByEmail(email).getId();
         log.info("POST /api/v1/auth/login - Authentification de l'utilisateur");
         LoginResponseDTO loginResponse = authService.generateToken(userId, email, roles);
         return ResponseEntity.ok(loginResponse);
     }
+
+
+    @Operation(summary = "Generation d'un token expiré", description = "Genere un token expiré")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Token expiré avec succès",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                     schema = @Schema())),
+        @ApiResponse(responseCode = "404", description = "Utilisateur non trouvé",
+                    content = @Content)
+    })
+    @PostMapping("/generate-expired-token")
+    public ResponseEntity<LoginResponseDTO> generateExpiredToken(@RequestBody LoginRequestDTO request) {
+        String email = request.getEmail();
+        List<String> roles = List.of("USER");
+        Long userId = userService.getUserByEmail(email).getId();
+        log.info("POST /api/v1/auth/generate-expired-token - Generation d'un token expiré");
+        LoginResponseDTO response = authService.generateExpiredToken(userId, email, roles);
+        return ResponseEntity.ok(response);
+    }
+
+
 }

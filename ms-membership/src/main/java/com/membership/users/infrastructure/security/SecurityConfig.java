@@ -20,6 +20,8 @@ public class SecurityConfig {
         )
         .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/v1/auth/login").permitAll()
+                .requestMatchers("/api/v1/auth/generate-expired-token").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
         )
         .oauth2ResourceServer(oauth2 ->

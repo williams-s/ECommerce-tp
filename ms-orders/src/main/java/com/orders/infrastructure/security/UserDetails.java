@@ -8,10 +8,11 @@ import java.util.List;
 
 public class UserDetails {
 
-    public static String getUserId() {
+    public static Long getUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.getPrincipal() instanceof Jwt jwt) {
-            return jwt.getClaimAsString("userId");
+            String userId = jwt.getClaimAsString("userId");
+            return Long.parseLong(userId);
         }
         return null;
     }

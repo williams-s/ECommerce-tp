@@ -7,6 +7,7 @@ import com.orders.application.dto.OrderedProductDTO;
 import com.orders.domain.entity.Order;
 import com.orders.domain.entity.OrderItem;
 import com.orders.infrastructure.client.ProductClient;
+import com.orders.infrastructure.security.UserDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
